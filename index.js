@@ -1,27 +1,24 @@
 const express = require("express");
-const getData = require("./scraper");
+const login = require("./loginScraper");
 const app = express();
-app.get("/scrape", async (req, res) => {
-  console.log("scraping");
-  const moodleEvents = new Promise((resolve, reject) => {
-    getData(req.query.username, req.query.password)
-      .then(data => {
-        resolve(data);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-  Promise.all([moodleEvents])
-    .then(data => {
-      res.json({
-        info: data
-      });
-    })
-    .catch(err => {
-      res.status(500).send(err);
-    });
-});
-app.listen(5000, () => {
-  console.log(`started on port`);
+
+// get data in background
+const getEvents = require("./getEvents");
+
+// connect mongodb database
+const connectDB = require("./config/db");
+
+connectDB();
+
+// allow for use of req.body
+app.use(express.json({ extended: false }));
+
+app.use("/scrape", require("./routes/events"));
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, async () => {
+  console.log(`started on port ${PORT}`);
+  // getEvents();
+  // setInterval(recieveDate, 3600000);
 });

@@ -1,8 +1,7 @@
 const puppeteer = require("puppeteer");
 const uuid = require("uuid/v4");
 
-let events = [];
-const getData = async (username, password) => {
+const login = async (username, password) => {
   let url = "https://moodle.itb.ie/login/index.php";
 
   let browser = await puppeteer.launch();
@@ -25,7 +24,7 @@ const getData = async (username, password) => {
 
   await page.type(`[name=password]`, password);
 
-  await page.screenshot({ path: "1.png" });
+  await page.screenshot({ path: "3.png" });
 
   await page.click(`input[id="loginbtn"]`);
 
@@ -46,36 +45,24 @@ const getData = async (username, password) => {
   });
   await page2.goto("https://moodle.itb.ie/course/view.php?id=1774&section=10");
 
-  await page2.screenshot({ path: "2.png" });
-
   const data = await page2.evaluate(() => {
-    const eventsList = document.querySelectorAll(".activityinstance");
+    const user = document.querySelector(".usermendrop");
 
-    const eventArray = Array.from(eventsList);
-
-    if (eventArray.length !== 0) {
-      let eventData = eventArray.slice(1).map(event => {
-        let singleEvent = {};
-        singleEvent.title = event.textContent;
-        singleEvent.text = event.lastElementChild.href;
-        return singleEvent;
-      });
-
-      return eventData;
+    if (!user) {
+      return false;
     }
+
+    return true;
   });
 
-  data.forEach(i => {
-    const found = events.some(el => el.title === i.title);
+  await page2.screenshot({ path: "4.png" });
+  browser.close();
 
-    if (!found) {
-      i.qrID = uuid();
-      events.push(i);
-    }
-  });
+  if (data) {
+    return "Good";
+  }
 
-  await browser.close();
-  return events;
+  return "Bad";
 };
 
-module.exports = getData;
+module.exports = login;
