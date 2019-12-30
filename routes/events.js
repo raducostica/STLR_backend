@@ -29,6 +29,7 @@ router.get("/", async (req, res) => {
     res.status(201).json(event);
   } catch (error) {
     console.log(error);
+    res.status(500).send("server error");
   }
 });
 

@@ -1,5 +1,4 @@
 const express = require("express");
-const login = require("./loginScraper");
 const app = express();
 
 // get data in background
@@ -14,6 +13,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 
 app.use("/scrape", require("./routes/events"));
+app.use("/qrcode", require("./routes/qrCode"));
 
 const PORT = process.env.PORT || 5000;
 

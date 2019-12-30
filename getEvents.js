@@ -6,7 +6,7 @@ const getData = require("./scraper");
 const getEvents = async () => {
   console.log("scraping");
   const moodleEvents = new Promise((resolve, reject) => {
-    getData("B00088971", "Ferrari.290416")
+    getData("B00088971", "Barca.290416")
       .then(data => {
         resolve(data);
       })
