@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const uuid = require("uuid/v4");
 
 const login = async (username, password) => {
+  console.log("testing");
   let url = "https://moodle.itb.ie/login/index.php";
 
   let browser = await puppeteer.launch();

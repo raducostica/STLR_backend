@@ -6,6 +6,12 @@ const login = require("../loginScraper");
 
 const Event = require("../models/Events");
 
+const jwt = require("jsonwebtoken");
+
+const config = require("config");
+
+const auth = require("../middleware/auth");
+
 router.post("/", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -13,24 +19,55 @@ router.post("/", async (req, res) => {
     const response = await login(username, password);
 
     if (response === "Good") {
-      res.status(201).json({ msg: "Success" });
+      const payload = {
+        user: {
+          id: username
+        }
+      };
+      jwt.sign(
+        payload,
+        config.get("jwtSecret"),
+        {
+          expiresIn: 360000
+        },
+        (err, token) => {
+          if (err) {
+            throw err;
+          }
+
+          res.json({ token });
+        }
+      );
+      // res.status(201).json({ msg: "Success" });
     } else {
-      res.json({ msg: "Fail" });
+      res.status(401).json({ msg: "Fail" });
     }
   } catch (error) {
     res.status(500).send("server error");
   }
 });
 
-router.get("/", async (req, res) => {
-  try {
-    let event = await Event.find({});
+router.get("/", auth, async (req, res) => {
+  console.log("pewpew1");
 
-    res.status(201).json(event);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("server error");
-  }
+  console.log(req.token);
+
+  jwt.verify(req.token, config.get("jwtSecret"), async (err, data) => {
+    if (err) {
+      res.sendStatus(401);
+    } else {
+      try {
+        let event = await Event.find({});
+
+        console.log("pewpew");
+
+        res.status(201).json({ event, data });
+      } catch (error) {
+        console.log(error);
+        res.status(500).send("server error");
+      }
+    }
+  });
 });
 
 module.exports = router;

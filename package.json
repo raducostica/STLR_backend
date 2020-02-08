@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "nodemon scraper.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "config": "^3.2.4",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.0",
     "nodemon": "^1.19.4",
     "puppeteer": "^2.0.0",
