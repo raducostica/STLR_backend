@@ -1,8 +1,7 @@
 const puppeteer = require("puppeteer");
 const uuid = require("uuid/v4");
 
-let events = [];
-const getData = async (username, password) => {
+const getData = async (username, password, events) => {
   console.log("working");
   let url = "https://moodle.itb.ie/login/index.php";
 
@@ -68,7 +67,6 @@ const getData = async (username, password) => {
 
   for (let i of data) {
     const page3 = await browser.newPage();
-    const found = events.some(el => el.title === i.title);
 
     if (i.text) {
       await page3.goto(i.text);
@@ -79,44 +77,69 @@ const getData = async (username, password) => {
 
         return eventArray[3].innerText;
       });
-      if (!found) {
+
+      let dueDate = changeDate(info);
+
+      if (data.length > 0) {
         i.qrID = uuid();
-        i.due = info;
+        i.due = dueDate;
+      }
+
+      const found = events.some(el => el.title === i.title);
+
+      if (!found) {
         events.push(i);
       }
     } else {
-      if (!found) {
+      const found = events.some(el => el.title === i.title);
+      if (data.length > 0) {
         i.qrID = uuid();
+        // events.push(i);
+      }
+
+      if (!found) {
         events.push(i);
       }
     }
   }
 
-  // data.forEach(i => {
-  //   const found = events.some(el => el.title === i.title);
-
-  //   if (!found) {
-  //     i.qrID = uuid();
-  //     events.push(i);
-  //   }
-  // });
-
   await browser.close();
   return events;
 };
 
-const moodleEvents = new Promise((resolve, reject) => {
-  getData("B00088971", "Barca.290416")
-    .then(data => {
-      resolve(data);
-    })
-    .catch(err => {
-      reject(err);
-    });
-});
+const changeDate = str => {
+  let newStr = str.split(",");
 
-Promise.all([moodleEvents]).then(data => {
-  console.log(data);
-});
+  newStr = newStr.splice(1);
+
+  for (let i in newStr) {
+    newStr[i] = newStr[i].trim();
+  }
+
+  let odate = newStr[0].split(" ");
+
+  let time = newStr[1].split(" ");
+
+  if (!time[0].includes(":")) {
+    time[0] += ":00";
+  }
+  let hoursMins = time[0].split(":");
+
+  if (time[1] === "AM" && hoursMins[0] == 12) {
+    let x = Number(hoursMins[0]);
+    let newhrs = x - 12;
+    hoursMins[0] = newhrs.toString();
+  } else if (time[1] === "PM" && hoursMins[0] < 12) {
+    let x = Number(hoursMins[0]);
+    let newhrs = x + 12;
+    hoursMins[0] = newhrs.toString();
+  }
+
+  let date;
+  date = new Date(odate[1] + " " + odate[0] + "," + odate[2]);
+  date.setHours(hoursMins[0], hoursMins[1], 0);
+
+  return date.toISOString();
+};
 
 module.exports = getData;

@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
-
-const Event = require("./models/Events");
 const getData = require("./scraper");
+const Event = require("./models/Events");
+
+let events = [];
 
 const getEvents = async () => {
   console.log("scraping");
   const moodleEvents = new Promise((resolve, reject) => {
-    getData("B00088971", "Barca.290416")
+    getData("B00088971", "Barca.290416", events)
       .then(data => {
         resolve(data);
       })
@@ -17,8 +17,10 @@ const getEvents = async () => {
   Promise.all([moodleEvents])
     .then(data => {
       data[0].forEach(async item => {
-        const { title, text, qrID } = item;
+        const { title, text, qrID, due } = item;
         const existingEvent = await Event.find({ title });
+
+        console.log(existingEvent);
 
         if (existingEvent.length > 0) {
           existingEvent.forEach(async event => {
@@ -26,7 +28,8 @@ const getEvents = async () => {
               const newEvent = new Event({
                 title,
                 text,
-                qrID
+                qrID,
+                due
               });
               await newEvent.save();
               console.log("saved");
@@ -38,7 +41,8 @@ const getEvents = async () => {
           const newEvent = new Event({
             title,
             text,
-            qrID
+            qrID,
+            due
           });
           await newEvent.save();
           console.log("saved");

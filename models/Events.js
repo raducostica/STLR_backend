@@ -11,6 +11,9 @@ const EventSchema = mongoose.Schema({
   qrID: {
     type: String,
     required: true
+  },
+  due: {
+    type: String
   }
 });
 

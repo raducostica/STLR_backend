@@ -9,27 +9,28 @@ const fs = require("fs");
 const uuid = require("uuid/v4");
 
 router.post("/", async (req, res) => {
-  const { qrData, username } = req.body;
+  console.log("trying");
+  const { qr, username } = req.body;
   try {
-    let qr = await Event.findOne({ qrID: qrData });
+    let qrData = await Event.findOne({ qrID: qr });
 
-    if (qr) {
-      if (fs.existsSync(`${qr.title}.txt`)) {
-        fs.appendFileSync(`${qr.title}.txt`, username);
+    if (qrData) {
+      if (fs.existsSync(`${qrData.title}.txt`)) {
+        fs.appendFileSync(`${qrData.title}.txt`, username);
       } else {
-        fs.writeFile(`${qr.title}.txt`, username, err => {
+        fs.writeFile(`${qrData.title}.txt`, username, err => {
           if (err) throw err;
           console.log("The file has been saved!");
         });
       }
-      await Event.findOneAndUpdate(
-        { qrID: qrData },
-        { $set: { qrID: uuid() } }
-      );
+      // await Event.findOneAndUpdate(
+      //   { qrID: qr },
+      //   { $set: { qrID: uuid() } }
+      // );
       return res.status(201).json({ msg: "success" });
     }
 
-    return res.json({ msg: "Error" });
+    // return res.json({ msg: "Error" });
   } catch (error) {
     console.log(error);
     res.status(500).send("server error");

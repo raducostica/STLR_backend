@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
       );
       // res.status(201).json({ msg: "Success" });
     } else {
-      res.status(401).json({ msg: "Fail" });
+      res.status(401).json({ msg: "Invalid Credentials" });
     }
   } catch (error) {
     res.status(500).send("server error");
@@ -48,18 +48,12 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", auth, async (req, res) => {
-  console.log("pewpew1");
-
-  console.log(req.token);
-
   jwt.verify(req.token, config.get("jwtSecret"), async (err, data) => {
     if (err) {
       res.sendStatus(401);
     } else {
       try {
         let event = await Event.find({});
-
-        console.log("pewpew");
 
         res.status(201).json({ event, data });
       } catch (error) {
