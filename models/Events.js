@@ -14,7 +14,16 @@ const EventSchema = mongoose.Schema({
   },
   due: {
     type: String
-  }
+  },
+  status: {
+    type: String,
+    required: true
+  },
+  present: [
+    {
+      type: String
+    }
+  ]
 });
 
 module.exports = mongoose.model("events", EventSchema);

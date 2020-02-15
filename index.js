@@ -1,12 +1,15 @@
 const express = require("express");
 const app = express();
 
-const updateQR = require("./updateQrCode");
+var server = require("http").createServer(app);
+var io = require("socket.io")(server);
+
+const PORT = process.env.PORT || 5000;
+
+const updateQR = require("./updateQR");
 
 // get data in background
 const getEvents = require("./getEvents");
-
-const getData = require("./scraper");
 
 // connect mongodb database
 const connectDB = require("./config/db");
@@ -20,12 +23,21 @@ app.use("/scrape", require("./routes/events"));
 app.use("/qrcode", require("./routes/qrCode"));
 app.use("/changeqr", require("./routes/changeqr"));
 
-const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`listening on port${PORT}`);
+  getEvents();
+  setInterval(getEvents, 360000);
+});
 
-app.listen(PORT, async () => {
-  console.log(`started on port ${PORT}`);
-  // getEvents();
-  // setInterval(getEvents, 120000);
-  // setInterval(updateQR, 6000);
-  // 3600000);
+io.on("connection", function(client) {
+  console.log("Client connected...");
+
+  client.on("qr", qr => {
+    console.log(qr);
+    updateQR(qr);
+  });
+
+  client.on("disconnect", function() {
+    console.log("disconnected");
+  });
 });

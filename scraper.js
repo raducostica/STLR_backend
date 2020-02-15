@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const uuid = require("uuid/v4");
 
 const getData = async (username, password, events) => {
-  console.log("working");
+  console.log("getting data");
   let url = "https://moodle.itb.ie/login/index.php";
 
   let browser = await puppeteer.launch();
@@ -71,18 +71,36 @@ const getData = async (username, password, events) => {
     if (i.text) {
       await page3.goto(i.text);
       const info = await page3.evaluate(() => {
-        const event = document.querySelectorAll(".lastcol");
+        // const event = document.querySelectorAll(".lastcol");
+        // let eventArray = Array.from(event);
+        // console.log(eventArray[3].innerText);
+        // return eventArray[3].innerText;
+        let oTable = document.querySelector(".generaltable");
+        let data = [...oTable.rows].map(t =>
+          [...t.children].map(u => u.innerText)
+        );
 
-        let eventArray = Array.from(event);
-
-        return eventArray[3].innerText;
+        return data.find(item => {
+          if (item[0].includes("Due")) {
+            return item[0];
+          }
+        });
       });
 
-      let dueDate = changeDate(info);
+      let dueDate = new Date();
+      let dateStatus = "";
+
+      if (info !== undefined) {
+        dueDate = changeDate(info[1]);
+        dateStatus = checkStatus(dueDate);
+      } else {
+        dateStatus = "current";
+      }
 
       if (data.length > 0) {
         i.qrID = uuid();
-        i.due = dueDate;
+        i.due = dueDate.toISOString();
+        i.status = dateStatus;
       }
 
       const found = events.some(el => el.title === i.title);
@@ -94,7 +112,7 @@ const getData = async (username, password, events) => {
       const found = events.some(el => el.title === i.title);
       if (data.length > 0) {
         i.qrID = uuid();
-        // events.push(i);
+        i.status = "current";
       }
 
       if (!found) {
@@ -139,7 +157,24 @@ const changeDate = str => {
   date = new Date(odate[1] + " " + odate[0] + "," + odate[2]);
   date.setHours(hoursMins[0], hoursMins[1], 0);
 
-  return date.toISOString();
+  return date;
+};
+
+const checkStatus = date => {
+  let today = new Date();
+  let mm = String(today.getMonth()).padStart(2, "0");
+  let dd = String(today.getDate()).padStart(2, "0");
+  let yy = String(today.getFullYear());
+
+  let hours = String(today.getHours());
+  let mins = String(today.getMinutes());
+  let todaysDate = new Date(yy, mm, dd, hours, mins);
+
+  if (+todaysDate >= +date) {
+    return "expired";
+  }
+
+  return "current";
 };
 
 module.exports = getData;

@@ -4,7 +4,7 @@ const Event = require("./models/Events");
 let events = [];
 
 const getEvents = async () => {
-  console.log("scraping");
+  console.log("getting events");
   const moodleEvents = new Promise((resolve, reject) => {
     getData("B00088971", "Barca.290416", events)
       .then(data => {
@@ -17,10 +17,8 @@ const getEvents = async () => {
   Promise.all([moodleEvents])
     .then(data => {
       data[0].forEach(async item => {
-        const { title, text, qrID, due } = item;
+        const { title, text, qrID, due, status } = item;
         const existingEvent = await Event.find({ title });
-
-        console.log(existingEvent);
 
         if (existingEvent.length > 0) {
           existingEvent.forEach(async event => {
@@ -29,20 +27,22 @@ const getEvents = async () => {
                 title,
                 text,
                 qrID,
-                due
+                due,
+                status
               });
               await newEvent.save();
               console.log("saved");
             }
 
-            console.log("working");
+            console.log("getEvents working");
           });
         } else {
           const newEvent = new Event({
             title,
             text,
             qrID,
-            due
+            due,
+            status
           });
           await newEvent.save();
           console.log("saved");

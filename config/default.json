@@ -1,4 +1,4 @@
 {
-  "mongoURI": "mongodb://stlrtud:zqvodV2HDhYdFn496OyAsAgefGGQtTvgUq4KYzLbOBQ22YL4H0jgYIJyrSHQLScuSeK8sYNX9HMkOggmvUcqpQ==@stlrtud.documents.azure.com:10255/?ssl=true&replicaSet=globaldb",
+  "mongoURI": "mongodb+srv://radz:radz@cluster0-5nrha.azure.mongodb.net/test?retryWrites=true&w=majority",
   "jwtSecret": "stlrWoop"
 }

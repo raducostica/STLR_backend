@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const uuid = require("uuid/v4");
 
 const login = async (username, password) => {
-  console.log("testing");
+  console.log("logging in user");
   let url = "https://moodle.itb.ie/login/index.php";
 
   let browser = await puppeteer.launch();
@@ -30,6 +30,8 @@ const login = async (username, password) => {
   await page.click(`input[id="loginbtn"]`);
 
   const cookies = await page.cookies();
+
+  console.log(cookies);
 
   await page.waitFor(5000);
 
