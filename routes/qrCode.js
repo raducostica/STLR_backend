@@ -1,4 +1,5 @@
 const express = require("express");
+const json2csv = require("json2csv").parse;
 
 const router = express.Router();
 
@@ -6,7 +7,6 @@ const Event = require("../models/Events");
 
 const fs = require("fs");
 
-const uuid = require("uuid/v4");
 router.post("/", async (req, res) => {
   console.log("trying");
   const { qr, username } = req.body;
@@ -29,20 +29,6 @@ router.post("/", async (req, res) => {
     );
 
     res.json(event);
-
-    // if (qrData) {
-    //   if (fs.existsSync(`${qrData.title}.txt`)) {
-    //     fs.appendFileSync(`${qrData.title}.txt`, username);
-    //   } else {
-    //     fs.writeFile(`${qrData.title}.txt`, username, err => {
-    //       if (err) throw err;
-    //       console.log("The file has been saved!");
-    //     });
-    //   }
-    //   return res.status(201).json({ msg: "success" });
-    // }
-
-    // return res.json({ msg: "Error" });
   } catch (error) {
     console.log(error);
     res.status(500).send("server error");

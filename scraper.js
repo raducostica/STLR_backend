@@ -90,17 +90,17 @@ const getData = async (username, password, events) => {
       let dueDate = new Date();
       let dateStatus = "";
 
+      console.log(info);
+
       if (info !== undefined) {
         dueDate = changeDate(info[1]);
         dateStatus = checkStatus(dueDate);
-      } else {
-        dateStatus = "current";
-      }
-
-      if (data.length > 0) {
         i.qrID = uuid();
-        i.due = dueDate.toISOString();
+        i.due = dueDate;
         i.status = dateStatus;
+      } else {
+        i.qrID = uuid();
+        i.status = "current";
       }
 
       const found = events.some(el => el.title === i.title);
@@ -110,10 +110,8 @@ const getData = async (username, password, events) => {
       }
     } else {
       const found = events.some(el => el.title === i.title);
-      if (data.length > 0) {
-        i.qrID = uuid();
-        i.status = "current";
-      }
+      i.qrID = uuid();
+      i.status = "current";
 
       if (!found) {
         events.push(i);
@@ -126,6 +124,7 @@ const getData = async (username, password, events) => {
 };
 
 const changeDate = str => {
+  console.log(str);
   let newStr = str.split(",");
 
   newStr = newStr.splice(1);
