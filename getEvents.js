@@ -19,8 +19,10 @@ const getEvents = async () => {
       data[0].forEach(async item => {
         const { title, text, qrID, due, status } = item;
         const existingEvent = await Event.find({ title });
+        console.log(existingEvent);
 
         if (existingEvent.length > 0) {
+          console.log("exists");
           existingEvent.forEach(async event => {
             if (title !== event.title) {
               const newEvent = new Event({

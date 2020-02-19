@@ -21,7 +21,6 @@ app.use(express.json({ extended: false }));
 
 app.use("/scrape", require("./routes/events"));
 app.use("/qrcode", require("./routes/qrCode"));
-app.use("/download", require("./routes/download"));
 
 server.listen(PORT, () => {
   console.log(`listening on port${PORT}`);
