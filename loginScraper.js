@@ -31,8 +31,6 @@ const login = async (username, password) => {
 
   const cookies = await page.cookies();
 
-  console.log(cookies);
-
   await page.waitFor(5000);
 
   const page2 = await browser.newPage();

@@ -7,7 +7,7 @@ const Event = require("../models/Events");
 
 const fs = require("fs");
 
-router.post("/", async (req, res) => {
+router.put("/", async (req, res) => {
   console.log("trying");
   const { qr, username } = req.body;
   try {
@@ -23,12 +23,19 @@ router.post("/", async (req, res) => {
 
       return todaysDate.toISOString();
     };
-    let event = await Event.findOneAndUpdate(
+
+    // const qrVerify = await Event.findOne({ qrID: qr });
+
+    const qrVerify = await Event.findOneAndUpdate(
       { qrID: qr },
       { $push: { present: username } }
     );
 
-    res.json(event);
+    if (!qrVerify) {
+      res.status(401).json({ msg: "failure" });
+    }
+
+    res.status(201).json({ msg: "success" });
   } catch (error) {
     console.log(error);
     res.status(500).send("server error");

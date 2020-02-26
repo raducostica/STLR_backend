@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
             throw err;
           }
 
-          res.json({ token });
+          res.status(201).json({ token });
         }
       );
       // res.status(201).json({ msg: "Success" });
@@ -55,7 +55,7 @@ router.get("/", auth, async (req, res) => {
       try {
         let event = await Event.find({});
 
-        res.status(201).json({ event, data });
+        res.status(201).json({ event });
       } catch (error) {
         console.log(error);
         res.status(500).send("server error");

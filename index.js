@@ -25,7 +25,7 @@ app.use("/qrcode", require("./routes/qrCode"));
 server.listen(PORT, () => {
   console.log(`listening on port${PORT}`);
   getEvents();
-  setInterval(getEvents, 360000);
+  // setInterval(getEvents, 360000);
 });
 
 io.on("connection", function(client) {
