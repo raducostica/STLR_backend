@@ -19,8 +19,9 @@ connectDB();
 // allow for use of req.body
 app.use(express.json({ extended: false }));
 
-app.use("/scrape", require("./routes/events"));
-app.use("/qrcode", require("./routes/qrCode"));
+app.use("/stlr/events", require("./routes/events"));
+app.use("/stlr/events/qrcode", require("./routes/qrCode"));
+app.use("/stlr/lecturer", require("./routes/lecturer"));
 
 server.listen(PORT, () => {
   console.log(`listening on port${PORT}`);

@@ -60,10 +60,10 @@ const login = async (username, password) => {
   browser.close();
 
   if (data) {
-    return "Good";
+    return true;
   }
 
-  return "Bad";
+  return false;
 };
 
 module.exports = login;

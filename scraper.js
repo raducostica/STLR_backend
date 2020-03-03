@@ -33,6 +33,23 @@ const getData = async (username, password, events) => {
 
   await page.waitFor(5000);
 
+  await page.goto("https://moodle.itb.ie/");
+
+  const adminLecturers = await page.evaluate(() => {
+    const stlrCourse = document.querySelectorAll(".coursebox.clearfix");
+
+    const stlrCourseArray = Array.from(stlrCourse);
+
+    let stlrCourseText = stlrCourseArray.find(course =>
+      course.innerText.includes("STLR")
+    ).innerText;
+
+    const stlrArr = stlrCourseText.split("Lecturer: ");
+    const stlrResult = stlrArr.map(i => i.replace(/\n|\r/g, ""));
+
+    return stlrResult;
+  });
+
   const page2 = await browser.newPage();
 
   await page2.setRequestInterception(true);
@@ -44,7 +61,7 @@ const getData = async (username, password, events) => {
       request.continue();
     }
   });
-  await page2.goto("https://moodle.itb.ie/course/view.php?id=1774&section=11");
+  await page2.goto("https://moodle.itb.ie/course/view.php?id=1774&section=12");
 
   await page2.screenshot({ path: "2.png" });
 
@@ -90,8 +107,6 @@ const getData = async (username, password, events) => {
       let dueDate = new Date();
       let dateStatus = "";
 
-      console.log(info);
-
       if (info !== undefined) {
         dueDate = changeDate(info[1]);
         dateStatus = checkStatus(dueDate);
@@ -120,11 +135,10 @@ const getData = async (username, password, events) => {
   }
 
   await browser.close();
-  return events;
+  return [events, adminLecturers];
 };
 
 const changeDate = str => {
-  console.log(str);
   let newStr = str.split(",");
 
   newStr = newStr.splice(1);

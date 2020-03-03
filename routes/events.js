@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
     console.log("logging in");
     const response = await login(username, password);
 
-    if (response === "Good") {
+    if (response) {
       const payload = {
         user: {
           id: username
@@ -38,7 +38,6 @@ router.post("/", async (req, res) => {
           res.status(201).json({ token });
         }
       );
-      // res.status(201).json({ msg: "Success" });
     } else {
       res.status(401).json({ msg: "Invalid Credentials" });
     }
