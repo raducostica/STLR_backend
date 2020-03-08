@@ -37,7 +37,7 @@ io.on("connection", function(client) {
     updateQR(qr);
   });
 
-  client.on("disconnect", function() {
-    console.log("disconnected");
-  });
+  // client.on("disconnect", function() {
+  //   console.log("disconnected");
+  // });
 });
