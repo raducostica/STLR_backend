@@ -7,34 +7,34 @@ let events = [];
 const getEvents = async () => {
   console.log("getting events");
   const moodleEvents = new Promise((resolve, reject) => {
-    getData("B00088971", "Ferrari.16084", events)
-      .then(data => {
+    getData("B00088971", "LoveBarca.290416", events)
+      .then((data) => {
         resolve(data);
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err);
       });
   });
   Promise.all([moodleEvents])
-    .then(data => {
+    .then((data) => {
       const lecturers = data[0][1];
       lecturers.shift();
 
-      lecturers.forEach(async item => {
+      lecturers.forEach(async (item) => {
         console.log(item);
         const existingLecturer = await Lecturer.find({ name: item });
 
         if (existingLecturer.length === 0) {
           const newLecturer = new Lecturer({
-            name: item
+            name: item,
           });
           await newLecturer.save();
           console.log("lecturer saved");
         } else {
-          existingLecturer.forEach(async lecturer => {
+          existingLecturer.forEach(async (lecturer) => {
             if (item !== lecturer.name) {
               const newLecturer = new Lecturer({
-                name: item
+                name: item,
               });
               await newLecturer.save();
               console.log("lecturer saved");
@@ -42,20 +42,20 @@ const getEvents = async () => {
           });
         }
       });
-      data[0][0].forEach(async item => {
+      data[0][0].forEach(async (item) => {
         const { title, text, qrID, due, status } = item;
         const existingEvent = await Event.find({ title });
 
         if (existingEvent.length > 0) {
           console.log("exists");
-          existingEvent.forEach(async event => {
+          existingEvent.forEach(async (event) => {
             if (title !== event.title) {
               const newEvent = new Event({
                 title,
                 text,
                 qrID,
                 due,
-                status
+                status,
               });
               await newEvent.save();
               console.log("saved");
@@ -69,14 +69,14 @@ const getEvents = async () => {
             text,
             qrID,
             due,
-            status
+            status,
           });
           await newEvent.save();
           console.log("saved");
         }
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };

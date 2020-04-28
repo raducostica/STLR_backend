@@ -19,8 +19,8 @@ connectDB();
 // allow for use of req.body
 app.use(express.json({ extended: false }));
 
+app.use("/stlr/users", require("./routes/users"));
 app.use("/stlr/events", require("./routes/events"));
-app.use("/stlr/events/qrcode", require("./routes/qrCode"));
 app.use("/stlr/lecturer", require("./routes/lecturer"));
 
 server.listen(PORT, () => {
@@ -29,15 +29,11 @@ server.listen(PORT, () => {
   // setInterval(getEvents, 360000);
 });
 
-io.on("connection", function(client) {
+io.on("connection", function (client) {
   console.log("Client connected...");
 
-  client.on("qr", qr => {
+  client.on("qr", (qr) => {
     console.log(qr);
     updateQR(qr);
   });
-
-  // client.on("disconnect", function() {
-  //   console.log("disconnected");
-  // });
 });

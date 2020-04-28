@@ -11,7 +11,7 @@ const getData = async (username, password, events) => {
 
   await page.setRequestInterception(true);
 
-  page.on("request", request => {
+  page.on("request", (request) => {
     if (["image", "stylesheet", "font"].includes(request.resourceType())) {
       request.abort();
     } else {
@@ -40,12 +40,12 @@ const getData = async (username, password, events) => {
 
     const stlrCourseArray = Array.from(stlrCourse);
 
-    let stlrCourseText = stlrCourseArray.find(course =>
+    let stlrCourseText = stlrCourseArray.find((course) =>
       course.innerText.includes("STLR")
     ).innerText;
 
     const stlrArr = stlrCourseText.split("Lecturer: ");
-    const stlrResult = stlrArr.map(i => i.replace(/\n|\r/g, ""));
+    const stlrResult = stlrArr.map((i) => i.replace(/\n|\r/g, ""));
 
     return stlrResult;
   });
@@ -54,14 +54,14 @@ const getData = async (username, password, events) => {
 
   await page2.setRequestInterception(true);
   await page2.setCookie(...cookies);
-  page2.on("request", request => {
+  page2.on("request", (request) => {
     if (["image", "stylesheet", "font"].includes(request.resourceType())) {
       request.abort();
     } else {
       request.continue();
     }
   });
-  await page2.goto("https://moodle.itb.ie/course/view.php?id=1774&section=12");
+  await page2.goto("https://moodle.itb.ie/course/view.php?id=1774&section=10");
 
   await page2.screenshot({ path: "2.png" });
 
@@ -71,7 +71,7 @@ const getData = async (username, password, events) => {
     const eventArray = Array.from(eventsList);
 
     if (eventArray.length !== 0) {
-      let eventData = eventArray.slice(1).map(event => {
+      let eventData = eventArray.slice(1).map((event) => {
         let singleEvent = {};
         singleEvent.title = event.textContent;
         singleEvent.text = event.lastElementChild.href;
@@ -93,11 +93,11 @@ const getData = async (username, password, events) => {
         // console.log(eventArray[3].innerText);
         // return eventArray[3].innerText;
         let oTable = document.querySelector(".generaltable");
-        let data = [...oTable.rows].map(t =>
-          [...t.children].map(u => u.innerText)
+        let data = [...oTable.rows].map((t) =>
+          [...t.children].map((u) => u.innerText)
         );
 
-        return data.find(item => {
+        return data.find((item) => {
           if (item[0].includes("Due")) {
             return item[0];
           }
@@ -118,13 +118,13 @@ const getData = async (username, password, events) => {
         i.status = "current";
       }
 
-      const found = events.some(el => el.title === i.title);
+      const found = events.some((el) => el.title === i.title);
 
       if (!found) {
         events.push(i);
       }
     } else {
-      const found = events.some(el => el.title === i.title);
+      const found = events.some((el) => el.title === i.title);
       i.qrID = uuid();
       i.status = "current";
 
@@ -138,7 +138,7 @@ const getData = async (username, password, events) => {
   return [events, adminLecturers];
 };
 
-const changeDate = str => {
+const changeDate = (str) => {
   let newStr = str.split(",");
 
   newStr = newStr.splice(1);
@@ -173,7 +173,7 @@ const changeDate = str => {
   return date;
 };
 
-const checkStatus = date => {
+const checkStatus = (date) => {
   let today = new Date();
   let mm = String(today.getMonth()).padStart(2, "0");
   let dd = String(today.getDate()).padStart(2, "0");
