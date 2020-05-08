@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const uuid = require("uuid/v4");
+const Event = require("./models/Events");
 
 const getData = async (username, password, events) => {
   console.log("getting data");

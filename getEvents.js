@@ -59,6 +59,17 @@ const getEvents = async () => {
               });
               await newEvent.save();
               console.log("saved");
+            } else {
+              if (status !== event.status) {
+                console.log(status, event.status);
+                await Event.findOneAndUpdate(
+                  { title },
+                  {
+                    $set: { status },
+                  }
+                );
+                console.log("modified status of existing event");
+              }
             }
 
             console.log("getEvents working");

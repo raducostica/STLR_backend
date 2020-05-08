@@ -34,6 +34,7 @@ io.on("connection", function (client) {
 
   client.on("qr", (qr) => {
     console.log(qr);
-    updateQR(qr);
+    updateQR(qr.qrCode_id, qr.newQRID);
+    client.emit("done", qr.newQRID);
   });
 });

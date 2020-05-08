@@ -54,6 +54,8 @@ router.post("/lect", async (req, res) => {
   try {
     let user = await Lecturer.findOne({ name: username });
 
+    user = user.toLowerCase();
+
     if (!user) {
       return res.status(401).json({ msg: "Invalid Credentials" });
     }

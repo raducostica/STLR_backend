@@ -35,19 +35,42 @@ router.put("/", async (req, res) => {
   console.log("trying");
   const { qr, username } = req.body;
   try {
-    const qrVerify = await Event.findOneAndUpdate(
-      { qrID: qr },
-      { $push: { present: username } }
-    );
+    console.log(qr, username);
+    const event = await Event.findOne({ qrID: qr });
+    console.log(event);
 
-    if (!qrVerify) {
-      res.status(401).json({ msg: "failure" });
+    if (event.present.length > 0) {
+      event.present.forEach(async (e) => {
+        try {
+          if (username !== e) {
+            await Event.findOneAndUpdate(
+              { qrID: qr },
+              { $push: { present: username } }
+            );
+          } else {
+            return res.status(201).json({ msg: "exists" });
+          }
+
+          return res.status(201).json({ msg: "success" });
+        } catch (error) {
+          return res.status(401).json({ msg: "fail" });
+        }
+      });
+    } else {
+      try {
+        await Event.findOneAndUpdate(
+          { qrID: qr },
+          { $push: { present: username } }
+        );
+
+        return res.status(201).json({ msg: "success" });
+      } catch (error) {
+        return res.status(401).json({ msg: "fail" });
+      }
     }
-
-    res.status(201).json({ msg: "success" });
   } catch (error) {
     console.log(error);
-    res.status(500).send("server error");
+    return res.status(500).send("server error");
   }
 });
 
