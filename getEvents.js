@@ -19,14 +19,14 @@ const getEvents = async () => {
     .then((data) => {
       const lecturers = data[0][1];
       lecturers.shift();
+      console.log(lecturers);
 
       lecturers.forEach(async (item) => {
-        console.log(item);
         const existingLecturer = await Lecturer.find({ name: item });
 
         if (existingLecturer.length === 0) {
           const newLecturer = new Lecturer({
-            name: item,
+            name: item.toLowerCase(),
           });
           await newLecturer.save();
           console.log("lecturer saved");
@@ -34,7 +34,7 @@ const getEvents = async () => {
           existingLecturer.forEach(async (lecturer) => {
             if (item !== lecturer.name) {
               const newLecturer = new Lecturer({
-                name: item,
+                name: item.toLowerCase(),
               });
               await newLecturer.save();
               console.log("lecturer saved");

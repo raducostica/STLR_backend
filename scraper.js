@@ -135,6 +135,9 @@ const getData = async (username, password, events) => {
     }
   }
 
+  // console.log(events);
+  // console.log(adminLecturers);
+
   await browser.close();
   return [events, adminLecturers];
 };

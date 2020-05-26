@@ -49,12 +49,12 @@ const config = require("config");
 // });
 
 router.post("/lect", async (req, res) => {
-  const { username, password } = req.body;
+  let { username, password } = req.body;
+
+  username = username.toLowerCase();
 
   try {
     let user = await Lecturer.findOne({ name: username });
-
-    user = user.toLowerCase();
 
     if (!user) {
       return res.status(401).json({ msg: "Invalid Credentials" });
