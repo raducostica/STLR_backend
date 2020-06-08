@@ -7,7 +7,7 @@ let events = [];
 const getEvents = async () => {
   console.log("getting events");
   const moodleEvents = new Promise((resolve, reject) => {
-    getData("B00088971", "LoveBarca.290416", events)
+    getData("username", "password", events)
       .then((data) => {
         resolve(data);
       })
