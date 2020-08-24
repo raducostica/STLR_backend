@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-// azure
-// "mongoURI": "mongodb://stlrtud:zqvodV2HDhYdFn496OyAsAgefGGQtTvgUq4KYzLbOBQ22YL4H0jgYIJyrSHQLScuSeK8sYNX9HMkOggmvUcqpQ==@stlrtud.documents.azure.com:10255/?ssl=true&replicaSet=globaldb",
 
 const config = require("config");
 
